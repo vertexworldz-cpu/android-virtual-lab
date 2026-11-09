@@ -19,4 +19,4 @@
   </div>
   <button class="btn btn-primary btn-block btn-lg" type="submit"><span>Sign in</span><?= icon('arrow-right') ?></button>
 </form>
-<p class="auth-foot muted">Access is restricted to authorised administrators. New accounts are created by the workspace owner.</p>
+<p class="auth-foot muted">Access is restricted to authorised administrators. New accounts are created by the workspace owner. · <a href="<?= e(url('privacy.php')) ?>">Privacy</a></p>

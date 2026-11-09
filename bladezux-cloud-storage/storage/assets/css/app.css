@@ -733,3 +733,9 @@ pre.config { background: var(--sidebar); color: #E5E7EB; padding: 16px; border-r
   .preview-nav { display: none; }
   .dropdown-wide { width: calc(100vw - 32px); right: -60px; }
 }
+
+/* Privacy policy page */
+.policy { display: grid; gap: 12px; font-size: 14px; color: var(--text-2); line-height: 1.65; }
+.policy h3 { margin-top: 8px; font-size: 15px; color: var(--text); }
+.policy ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.auth-card:has(.policy) { max-width: 640px; }
