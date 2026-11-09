@@ -12,3 +12,10 @@ zip -qr "bladezux-cloud-storage/$OUT" bladezux-cloud-storage \
      'bladezux-cloud-storage/private/config.php' 'bladezux-cloud-storage/private/logs/*.log' \
      'bladezux-cloud-storage/storage/uploads/branding/logo-*' 'bladezux-cloud-storage/tests/.runtime/*'
 echo "Built $OUT"
+
+# Second archive for cPanel: the contents of storage/ at the ZIP root, so it can be
+# extracted directly inside public_html/storage/ with File Manager → Extract.
+cd bladezux-cloud-storage/storage
+rm -f ../dist/bladezux-storage-upload-v1.0.0.zip
+zip -qr ../dist/bladezux-storage-upload-v1.0.0.zip . -x 'app/private/*' 'uploads/branding/logo-*'
+echo "Built dist/bladezux-storage-upload-v1.0.0.zip"
