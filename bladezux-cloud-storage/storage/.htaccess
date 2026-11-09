@@ -1,0 +1,48 @@
+# Bladezux Cloud Storage — web server hardening (Apache / LiteSpeed)
+# Scope: this file only affects the /storage directory. It never touches the main website.
+
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Force HTTPS (the application also enforces this in PHP).
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # Block direct access to internal folders and sensitive file types.
+  RewriteRule ^app(/|$) - [F,L]
+  RewriteRule (^|/)\. - [F,L]
+  RewriteRule \.(sql|md|log|ini|lock|bak|dist|sh|json|yml|yaml)$ - [F,L,NC]
+</IfModule>
+
+# Fallback when mod_rewrite is unavailable.
+<FilesMatch "(^\.|\.(sql|md|log|ini|lock|bak|dist|sh|yml|yaml)$)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "same-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always unset X-Powered-By
+</IfModule>
+
+# Long-lived caching for versioned static assets.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+</IfModule>
