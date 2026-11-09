@@ -307,7 +307,7 @@ async function waitUploads(page, count, timeout) {
   ok(sha(path.join(MOCK, 'blobs', flakyRow)) === sha(files.flaky) && relayReqs.length === relayBefore, 'Upload survives transient 503 errors (retry + resume from Google offset)');
 
   // d) Pause / resume
-  await page.route('http://127.0.0.1:9100/upload/**', async (route) => { await sleep(150); route.continue(); });
+  await page.route('http://127.0.0.1:9100/upload/**', async (route) => { await sleep(700); route.continue(); });
   await page.setInputFiles('#upload-input', [files.pausable]);
   const item = page.locator('.upload-item', { hasText: 'design-assets.zip' });
   await item.locator('.is-uploading, .upload-meta').first().waitFor();

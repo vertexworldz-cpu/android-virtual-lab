@@ -3,6 +3,27 @@ declare(strict_types=1);
 
 use Bladezux\App;
 
+// Fallbacks for hosts without the mbstring extension (UTF-8 only, used by the app).
+if (!function_exists('mb_strlen')) {
+    function mb_strlen(string $s, ?string $encoding = null): int
+    {
+        return preg_match_all('/./us', $s) ?: strlen($s);
+    }
+}
+if (!function_exists('mb_substr')) {
+    function mb_substr(string $s, int $start, ?int $length = null, ?string $encoding = null): string
+    {
+        $chars = preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY) ?: str_split($s);
+        return implode('', array_slice($chars, $start, $length));
+    }
+}
+if (!function_exists('mb_strtoupper')) {
+    function mb_strtoupper(string $s, ?string $encoding = null): string
+    {
+        return strtoupper($s);
+    }
+}
+
 function e(mixed $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

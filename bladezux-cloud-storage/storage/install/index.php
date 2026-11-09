@@ -43,11 +43,12 @@ $add = static function (string $label, string $level, string $value) use (&$chec
     $checks[] = compact('label', 'level', 'value');
 };
 $add('PHP version 8.2 or newer', PHP_VERSION_ID >= 80200 ? 'ok' : 'bad', PHP_VERSION);
-foreach (['pdo_mysql' => 'MySQL database access', 'curl' => 'Google Drive API calls', 'openssl' => 'Token encryption + TLS', 'mbstring' => 'Unicode file names', 'json' => 'API responses', 'fileinfo' => 'MIME type validation', 'session' => 'Secure sessions'] as $ext => $why) {
+foreach (['pdo_mysql' => 'MySQL database access', 'curl' => 'Google Drive API calls', 'openssl' => 'Token encryption + TLS', 'json' => 'API responses', 'session' => 'Secure sessions'] as $ext => $why) {
     $add("Extension: $ext ($why)", extension_loaded($ext) ? 'ok' : 'bad', extension_loaded($ext) ? 'installed' : 'missing');
 }
-foreach (['intl' => 'Unicode name normalisation', 'gd' => 'Logo validation'] as $ext => $why) {
-    $add("Extension: $ext ($why)", extension_loaded($ext) ? 'ok' : 'warn', extension_loaded($ext) ? 'installed' : 'optional');
+foreach (['mbstring' => 'Unicode file names', 'fileinfo' => 'MIME type validation', 'intl' => 'Unicode name normalisation', 'gd' => 'Logo validation'] as $ext => $why) {
+    $fallback = in_array($ext, ['mbstring', 'fileinfo'], true) ? 'recommended — built-in fallback used' : 'optional';
+    $add("Extension: $ext ($why)", extension_loaded($ext) ? 'ok' : 'warn', extension_loaded($ext) ? 'installed' : $fallback);
 }
 $add('HTTPS', App::isHttps() ? 'ok' : 'warn', App::isHttps() ? 'enabled' : 'not detected — enable SSL before going live');
 $add('post_max_size (relay fallback chunk limit)', $iniBytes('post_max_size') >= 8 << 20 ? 'ok' : 'warn', (string) ini_get('post_max_size'));

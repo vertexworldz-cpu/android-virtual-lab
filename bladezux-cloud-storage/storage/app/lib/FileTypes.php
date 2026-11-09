@@ -150,6 +150,13 @@ final class FileTypes
                 return 'Files of type ".' . $part . '" are not allowed for security reasons.';
             }
         }
+        if ($head !== '' && !function_exists('finfo_open')) {
+            // Fallback when the fileinfo extension is unavailable: block common executable signatures.
+            if (str_starts_with($head, 'MZ') || str_starts_with($head, "\x7FELF") || str_starts_with($head, '#!')
+                || preg_match('/^\s*<\?php/i', $head) || str_starts_with($head, "\xCF\xFA\xED\xFE") || str_starts_with($head, "\xFE\xED\xFA")) {
+                return 'This file appears to be an executable or script, which is not allowed.';
+            }
+        }
         if ($head !== '' && function_exists('finfo_open')) {
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $detected = (string) $finfo->buffer($head);
