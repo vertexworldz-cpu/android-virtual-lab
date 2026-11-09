@@ -159,14 +159,9 @@ final class Uploads
                 }
             }
         }
-        if (!empty($s['quota_limit']) && (int) $s['quota_usage'] + $size > (int) $s['quota_limit']) {
-            throw new DriveException(
-                'Upload quota exceeded: this file needs ' . format_bytes($size) . ' but only '
-                . format_bytes(max(0, (int) $s['quota_limit'] - (int) $s['quota_usage'])) . ' is free in Google Drive.',
-                507,
-                'quota_exceeded'
-            );
-        }
+        // No local pre-blocking: quota figures from about.get can be stale or pooled
+        // (Workspace / Google One), so Google itself decides when the session is created
+        // and a real shortage surfaces as storageQuotaExceeded → "Upload quota exceeded".
     }
 
     /** Server-verified status: asks Google for the persisted byte offset. */
