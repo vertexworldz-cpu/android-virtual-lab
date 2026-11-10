@@ -1,0 +1,8 @@
+# Never commit secrets or runtime data
+private/config.php
+private/logs/*
+!private/logs/.htaccess
+storage/app/private/
+storage/uploads/branding/logo-*
+dist/
+tests/.runtime/
