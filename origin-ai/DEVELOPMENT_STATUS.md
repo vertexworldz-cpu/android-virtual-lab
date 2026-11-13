@@ -35,7 +35,7 @@ Trained in this session from random weights. Measured results:
 answers anyone can check. **What it is not:** a general assistant. It cannot
 converse, write, code or reason outside those tasks, and off-topic input
 produces unreliable output. The UI states this on the dashboard and the
-Models page. Weights are not committed; reproduce with `make bootstrap-model`.
+Models page. The 22 MB checkpoint is committed in `models/origin-nano-bootstrap/` (copy it to `data/checkpoints/`); it can also be reproduced with `make bootstrap-model`.
 
 ### Platform API
 - Accounts: owner setup, registration (can be closed), login, logout,

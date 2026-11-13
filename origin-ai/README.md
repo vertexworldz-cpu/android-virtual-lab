@@ -33,6 +33,19 @@ Open http://localhost:3000 and create the owner account. Try
 You can skip `make bootstrap-model`; chat will then tell you no model is
 available rather than answer.
 
+## Android (Termux)
+
+```bash
+pkg install git && git clone <repo> && cd <repo>/origin-ai
+bash scripts/termux-setup.sh   # once
+bash scripts/termux-run.sh     # then open http://localhost:3000 in the phone browser
+```
+
+Untested on a real phone: PyTorch must come from Termux's own package
+repos (`python-torch`), and the web build downloads native binaries that may
+not exist for every Android device. The setup script stops with a clear
+message if a step fails. The pre-trained checkpoint is in `models/`.
+
 ## Layout
 
 | Path | What |

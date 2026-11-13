@@ -1,0 +1,125 @@
+{
+  "name": "origin-nano-bootstrap",
+  "family": "origin",
+  "preset": "nano",
+  "origin_core_version": "0.1.0",
+  "created_at": "2026-11-13T22:07:55Z",
+  "initialization": "random weights (trained from scratch)",
+  "parameters": 1869504,
+  "context_length": 256,
+  "vocab_size": 512,
+  "training": {
+    "steps": 6000,
+    "device": "cpu",
+    "parameters": 1869504,
+    "train_seconds": 1591.7,
+    "best_val_loss": 0.00172,
+    "train_loss": 4e-05,
+    "val_loss": 0.00172,
+    "val_perplexity": 1.0017,
+    "dataset": "origin bootstrap (programmatically generated arithmetic chat)",
+    "train_examples": 48809,
+    "hardware": "x86_64 / cpu",
+    "torch": "2.15.0+cu132"
+  },
+  "evaluation": {
+    "benchmark": "bootstrap held-out exact match (unseen operand pairs)",
+    "accuracy": 0.9937402190923318,
+    "correct": 2540,
+    "total": 2556,
+    "per_task": {
+      "add": {
+        "accuracy": 1.0,
+        "correct": 984,
+        "total": 984
+      },
+      "cmp": {
+        "accuracy": 0.9890873015873016,
+        "correct": 997,
+        "total": 1008
+      },
+      "mul": {
+        "accuracy": 0.8958333333333334,
+        "correct": 43,
+        "total": 48
+      },
+      "sub": {
+        "accuracy": 1.0,
+        "correct": 516,
+        "total": 516
+      }
+    },
+    "failures": [
+      {
+        "prompt": "Compare 73 and 63",
+        "expected": "73 is larger than 63.",
+        "got": "73 and 63 are equal."
+      },
+      {
+        "prompt": "Which is bigger: 44 or 44?",
+        "expected": "44 and 44 are equal.",
+        "got": "44 is larger than 44."
+      },
+      {
+        "prompt": "Which is bigger: 6 or 8?",
+        "expected": "8 is larger than 6.",
+        "got": "8 and 8 are equal."
+      },
+      {
+        "prompt": "Calculate 14 * 17",
+        "expected": "14 * 17 = 238",
+        "got": "14 * 17 = 228"
+      },
+      {
+        "prompt": "Compare 71 and 80",
+        "expected": "80 is larger than 71.",
+        "got": "80 and 80 are equal."
+      },
+      {
+        "prompt": "Multiply 14 by 18",
+        "expected": "14 * 18 = 252",
+        "got": "14 * 18 = 212"
+      },
+      {
+        "prompt": "18 * 18",
+        "expected": "18 * 18 = 324",
+        "got": "18 * 18 = 344"
+      },
+      {
+        "prompt": "14 * 19",
+        "expected": "14 * 19 = 266",
+        "got": "14 * 19 = 286"
+      },
+      {
+        "prompt": "Which is larger, 61 or 61?",
+        "expected": "61 and 61 are equal.",
+        "got": "61 is larger than 61."
+      },
+      {
+        "prompt": "Compare 64 and 64",
+        "expected": "64 and 64 are equal.",
+        "got": "64 is larger than 64."
+      }
+    ]
+  },
+  "capabilities": [
+    "Addition and subtraction (0-99)",
+    "Multiplication (0-20)",
+    "Comparing two numbers"
+  ],
+  "limitations": [
+    "Not a general-purpose language model: it cannot converse, write, code or reason beyond the tasks above.",
+    "Inputs outside its training distribution produce unreliable output."
+  ],
+  "suggested_prompts": [
+    "What is 47 + 38?",
+    "Calculate 90 - 27",
+    "Multiply 12 by 9",
+    "Which is larger, 58 or 85?",
+    "Who are you?"
+  ],
+  "default_generation": {
+    "temperature": 0.0,
+    "max_new_tokens": 96
+  }
+}
