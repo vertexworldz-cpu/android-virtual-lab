@@ -25,7 +25,9 @@ fi
 python -c "import torch; print('torch', torch.__version__)"
 
 echo "==> API dependencies"
-pip install fastapi "uvicorn" "sqlalchemy>=2" pydantic-settings argon2-cffi python-multipart
+pip install fastapi "uvicorn" "sqlalchemy>=2" pydantic-settings python-multipart
+# argon2 cannot be built on Android; the API falls back to scrypt automatically.
+pip install --only-binary=:all: argon2-cffi 2>/dev/null || echo "(argon2 unavailable, using scrypt for passwords)"
 python -c "import psutil" 2>/dev/null || pip install psutil
 # --no-deps: the packages list psycopg[binary] (PostgreSQL), which has no Android build
 # and is not needed on SQLite.

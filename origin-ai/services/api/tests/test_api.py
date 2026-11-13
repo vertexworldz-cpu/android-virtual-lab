@@ -294,3 +294,17 @@ def test_cancelled_generation_is_stored_as_cancelled(owner):
     stored = owner.get(f"{API}/conversations/{cid}").json()["messages"][0]
     assert stored["status"] == "cancelled" and stored["usage"]["finish_reason"] == "cancelled"
     assert emitted[-1] is None and emitted[-2]["type"] == "done"
+
+
+def test_scrypt_fallback_when_argon2_missing(monkeypatch):
+    from origin_api import security
+    monkeypatch.setattr(security, "_argon2", None)
+    h = security.hash_password("a long test password")
+    assert h.startswith("scrypt$") and security.verify_password("a long test password", h)
+    assert not security.verify_password("wrong password", h)
+    assert not security.verify_password("x", "scrypt$broken")
+    monkeypatch.undo()
+    assert security.verify_password("a long test password", h)          # scrypt hashes verify with argon2 present too
+    argon = security.hash_password("pw")
+    monkeypatch.setattr(security, "_argon2", None)
+    assert security.verify_password("pw", argon) is False                # cannot verify without the library
