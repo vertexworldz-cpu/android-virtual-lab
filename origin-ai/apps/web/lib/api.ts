@@ -106,13 +106,15 @@ export type ConversationDetail = Conversation & { messages: Message[] };
 export type Project = { id: string; name: string; description: string; created_at: string; updated_at: string; conversation_count: number };
 export type Memory = { id: string; kind: "preference" | "fact" | "note"; content: string; enabled: boolean; project_id: string | null; created_at: string; updated_at: string };
 export type ModelCard = {
-  name?: string; preset?: string; parameters?: number; context_length?: number; vocab_size?: number; created_at?: string;
+  name?: string; kind?: string; remote_model?: string; preset?: string; parameters?: number; context_length?: number; vocab_size?: number; created_at?: string;
   initialization?: string; capabilities?: string[]; limitations?: string[]; suggested_prompts?: string[];
   training?: { steps?: number; device?: string; train_seconds?: number; val_loss?: number; dataset?: string | string[]; train_examples?: number; hardware?: string };
   evaluation?: { benchmark?: string; accuracy?: number; correct?: number; total?: number; per_task?: Record<string, { accuracy: number; correct: number; total: number }> };
 };
-export type ModelStatus = { available: boolean; name: string | null; loaded: boolean; error: string | null; reason?: string; card?: ModelCard };
-export type ModelInfo = { name: string; size_bytes: number; modified_at: number; card: ModelCard; active: boolean; loaded: boolean };
+export type ModelStatus = { available: boolean; kind?: "origin" | "external" | null; display_name?: string; name: string | null; loaded: boolean; error: string | null; reason?: string; card?: ModelCard };
+export type ModelInfo = { name: string; kind: "origin" | "external"; display_name: string; size_bytes: number; modified_at: number; card: ModelCard; active: boolean; loaded: boolean };
+export type Backend = { id: string; name: string; base_url: string; model: string };
+export type BackendTest = { ok: boolean; error: string | null; models: string[]; model_available?: boolean };
 export type MetricRecord = { event: string; step?: number; loss?: number; train_loss?: number; val_loss?: number; lr?: number; steps_per_sec?: number };
 export type Compute = {
   provider: string; billing: string; host: { os: string; arch: string; python: string };

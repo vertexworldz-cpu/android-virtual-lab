@@ -17,6 +17,7 @@ dependencies = [
   "argon2-cffi; platform_system != 'Android'",
   "python-multipart",
   "psutil",
+  "httpx",
 ]
 
 [project.optional-dependencies]

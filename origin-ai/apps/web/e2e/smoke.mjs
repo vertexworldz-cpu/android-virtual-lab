@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createServer } from "node:http";
 
 const { chromium } = createRequire(import.meta.url)("playwright");
 const BASE = process.env.ORIGIN_WEB_URL ?? "http://localhost:3000";
@@ -133,6 +134,46 @@ try {
   await page.getByText("Serving chat").waitFor();
   check("models page shows the serving checkpoint", true);
   await shot(page, "05-models");
+
+  // --- external open-model server (fake Ollama-style endpoint) end to end
+  const fake = createServer((req, res) => {
+    if (req.url === "/v1/models") {
+      res.setHeader("Content-Type", "application/json");
+      return res.end(JSON.stringify({ data: [{ id: "llama3.2:3b" }] }));
+    }
+    req.resume();
+    req.on("end", () => {
+      res.setHeader("Content-Type", "text/event-stream");
+      for (const t of ["Hello", " from", " Llama"]) res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: t } }] })}\n\n`);
+      res.end("data: [DONE]\n\n");
+    });
+  });
+  await new Promise((r) => fake.listen(0, "127.0.0.1", r));
+  const fakeUrl = `http://127.0.0.1:${fake.address().port}/v1`;
+  await page.goto(`${BASE}/models`);
+  await page.getByRole("button", { name: "Connect a server" }).click();
+  await page.getByLabel("Name", { exact: true }).fill("Local Llama");
+  await page.getByLabel("Server address").fill(fakeUrl);
+  await page.getByLabel("Model name on the server").fill("llama3.2:3b");
+  await page.getByRole("button", { name: "Add server" }).click();
+  await page.getByRole("button", { name: "Test connection" }).click();
+  await page.getByText(/Connected\. Server offers 1 model/).waitFor();
+  check("admin connects an open-model server and the connection test passes", true);
+  const external = page.locator("h2", { hasText: "Local Llama" }).locator("xpath=ancestor::div[contains(@class,'rounded-xl')][1]");
+  await external.getByRole("button", { name: "Use for chat" }).click();
+  await external.getByText("Serving chat").waitFor();
+  check("external model can be selected for chat", true);
+  await page.goto(`${BASE}/`);
+  await page.getByLabel("Message Origin").fill("Hi");
+  await page.getByLabel("Message Origin").press("Enter");
+  await page.getByText("Hello from Llama").waitFor({ timeout: 30000 });
+  check("chat is answered by the external model", true);
+  await page.goto(`${BASE}/models`);
+  const origin = page.locator("h2", { hasText: "origin-nano-bootstrap" }).locator("xpath=ancestor::div[contains(@class,'rounded-xl')][1]");
+  await origin.getByRole("button", { name: "Use for chat" }).click();
+  await origin.getByText("Serving chat").waitFor();
+  fake.close();
+  check("switch back to the Origin model", true);
 
   // --- planned module is labelled as not built
   await page.goto(`${BASE}/agents`);

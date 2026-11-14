@@ -37,6 +37,20 @@ converse, write, code or reason outside those tasks, and off-topic input
 produces unreliable output. The UI states this on the dashboard and the
 Models page. The 22 MB checkpoint is committed in `models/origin-nano-bootstrap/` (copy it to `data/checkpoints/`); it can also be reproduced with `make bootstrap-model`.
 
+### Open-model servers (new)
+- Administrators can connect any OpenAI-compatible server (Ollama, llama.cpp,
+  vLLM) from **Models**, test the connection, choose it for chat, or remove it.
+  Chat streams from it, includes conversation history and enabled memories,
+  and shows the server's real errors (unreachable, HTTP errors) instead of
+  inventing a reply. Origin's own model stays selectable alongside it.
+- Verified against a fake OpenAI-style server in tests and the browser suite.
+  **Not yet verified against a real Ollama install** (none available in the
+  build environment).
+- No API keys are stored (local servers need none). Adding keys needs the
+  encrypted-credential store (roadmap).
+- External models are not trained by Origin; their ability and licence are the
+  publisher's. The UI labels them that way.
+
 ### Platform API
 - Accounts: owner setup, registration (can be closed), login, logout,
   profile, password change. Argon2id, hashed server-side sessions.
@@ -103,10 +117,10 @@ Models page. The 22 MB checkpoint is committed in `models/origin-nano-bootstrap/
 | Check | Result |
 |---|---|
 | `core` unit tests (tokenizer, model causality, KV-cache equivalence, training, checkpoints) | 16 passed |
-| `services/api` tests on SQLite | 22 passed |
-| `services/api` tests on PostgreSQL 16 | 22 passed |
+| `services/api` tests on SQLite | 28 passed |
+| `services/api` tests on PostgreSQL 16 | 22 passed (before the open-model tests were added) |
 | Web: ESLint, TypeScript, production build | clean |
-| Browser end-to-end (`apps/web/e2e/smoke.mjs`, Chromium, production build, final checkpoint) | 24 / 24 checks passed |
+| Browser end-to-end (`apps/web/e2e/smoke.mjs`, Chromium, production build, final checkpoint) | 28 / 28 checks passed |
 | Bootstrap model held-out benchmark | 2,540 / 2,556 |
 
 Not verified: Docker compose stack, CUDA/MPS code paths (no such hardware

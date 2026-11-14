@@ -33,6 +33,17 @@ Open http://localhost:3000 and create the owner account. Try
 You can skip `make bootstrap-model`; chat will then tell you no model is
 available rather than answer.
 
+## Use an open model on your own GPU
+
+1. Install [Ollama](https://ollama.com) and download a model that fits your
+   GPU and whose licence suits you, e.g. `ollama pull llama3.2:3b`.
+2. In Origin sign in as owner, open **Models → Connect a server**, enter
+   `http://localhost:11434/v1` and the model name, press **Test connection**,
+   then **Use for chat** on its card.
+
+Origin sends chats only to servers an administrator adds. Switch back to
+Origin's own model at any time from the same page.
+
 ## Android (Termux)
 
 ```bash
