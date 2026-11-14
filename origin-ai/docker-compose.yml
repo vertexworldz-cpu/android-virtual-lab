@@ -1,0 +1,41 @@
+# Optional data services for Origin AI. The platform runs without these
+# (SQLite + local disk); use them when you want PostgreSQL/pgvector, Redis
+# and S3-compatible storage.
+#
+#   cp .env.example .env   # set POSTGRES_PASSWORD
+#   docker compose up -d postgres
+#
+# NOTE: only PostgreSQL is used by the application today. Redis and MinIO are
+# defined for the upcoming rate-limit/queue and object-storage backends.
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: origin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: origin
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U origin"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["full"]
+    ports: ["127.0.0.1:6379:6379"]
+
+  minio:
+    image: minio/minio
+    profiles: ["full"]
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: origin
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
+    ports: ["127.0.0.1:9000:9000", "127.0.0.1:9001:9001"]
+    volumes: ["miniodata:/data"]
+
+volumes:
+  pgdata:
+  miniodata:

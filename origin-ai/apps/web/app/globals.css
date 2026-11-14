@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Origin AI design tokens.
+   Light (pure white) is the default. Dark is opt-in via <html data-theme="dark">.
+   Components use only these semantic tokens, never raw colours.
+--------------------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --surface: #fafafa;        /* sidebar, quiet panels */
+  --surface-2: #f4f4f3;      /* hover, user bubble, code */
+  --fg: #1a1a1a;
+  --fg-2: #4a4a48;
+  --muted: #8a8a86;
+  --line: #ececea;
+  --line-strong: #dcdcd8;
+  --brand: #0f7b53;
+  --brand-hover: #0b6845;
+  --brand-soft: #eef7f2;
+  --on-brand: #ffffff;
+  --danger: #b42318;
+  --danger-soft: #fef3f2;
+  --warn: #a15c07;
+  --warn-soft: #fffaeb;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 20, 0.04);
+  --shadow-md: 0 1px 2px rgba(16, 24, 20, 0.04), 0 8px 24px -6px rgba(16, 24, 20, 0.08);
+  --shadow-lg: 0 2px 4px rgba(16, 24, 20, 0.04), 0 24px 48px -12px rgba(16, 24, 20, 0.16);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #161716;
+  --surface: #1b1c1b;
+  --surface-2: #252625;
+  --fg: #ededeb;
+  --fg-2: #c4c4c0;
+  --muted: #8b8b86;
+  --line: #2a2b2a;
+  --line-strong: #3a3b39;
+  --brand: #3fb488;
+  --brand-hover: #55c398;
+  --brand-soft: #17261f;
+  --on-brand: #0c1410;
+  --danger: #f97066;
+  --danger-soft: #2a1614;
+  --warn: #fdb022;
+  --warn-soft: #2a2110;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-on-brand: var(--on-brand);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --shadow-soft: var(--shadow-sm);
+  --shadow-card: var(--shadow-md);
+  --shadow-pop: var(--shadow-lg);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+/* In the base layer so utilities (e.g. focus:outline-none on inputs that draw
+   their own focus ring) can override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@keyframes origin-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-in { animation: origin-fade-in 0.24s ease-out both; }
+
+@keyframes origin-blink { 50% { opacity: 0; } }
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 2px;
+  background: var(--brand);
+  animation: origin-blink 1s steps(1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in, .caret::after { animation: none; }
+}
+
+/* Markdown rendered inside assistant messages */
+.prose-origin { line-height: 1.7; overflow-wrap: anywhere; }
+.prose-origin > :first-child { margin-top: 0; }
+.prose-origin > :last-child { margin-bottom: 0; }
+.prose-origin p, .prose-origin ul, .prose-origin ol, .prose-origin pre, .prose-origin table, .prose-origin blockquote { margin: 0.75em 0; }
+.prose-origin h1, .prose-origin h2, .prose-origin h3 { font-weight: 600; letter-spacing: -0.01em; margin: 1.3em 0 0.5em; }
+.prose-origin h1 { font-size: 1.35em; }
+.prose-origin h2 { font-size: 1.18em; }
+.prose-origin h3 { font-size: 1.05em; }
+.prose-origin ul { list-style: disc; padding-left: 1.4em; }
+.prose-origin ol { list-style: decimal; padding-left: 1.4em; }
+.prose-origin li { margin: 0.25em 0; }
+.prose-origin a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.prose-origin blockquote { border-left: 2px solid var(--line-strong); padding-left: 1em; color: var(--fg-2); }
+.prose-origin :not(pre) > code { font-family: var(--font-mono); font-size: 0.875em; background: var(--surface-2); padding: 0.15em 0.4em; border-radius: 5px; }
+.prose-origin table { display: block; overflow-x: auto; border-collapse: collapse; font-size: 0.925em; }
+.prose-origin th, .prose-origin td { border-bottom: 1px solid var(--line); padding: 0.5em 0.9em; text-align: left; }
+.prose-origin th { font-weight: 600; color: var(--fg-2); }
+.prose-origin hr { border: 0; border-top: 1px solid var(--line); margin: 1.5em 0; }
