@@ -40,6 +40,7 @@ mkdir -p data/checkpoints
 echo "==> Web app"
 cd apps/web
 npm install
-NEXT_TELEMETRY_DISABLED=1 npm run build
+# Turbopack has no Android build, so use Webpack
+NEXT_TELEMETRY_DISABLED=1 npx next build --webpack
 echo
 echo "Done. Start Origin with:  bash scripts/termux-run.sh"
